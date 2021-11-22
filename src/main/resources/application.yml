@@ -1,0 +1,18 @@
+cloud:
+  aws:
+    region:
+      static: sa-east-1
+    stack:
+      auto: false
+    credentials:
+      secretKey: ABC
+      accessKey: XYZ
+
+sqs:
+  personQueue: person-queue
+
+s3:
+  personBucket: person-bucket
+
+sns:
+  personTopic: person-topic
