@@ -27,10 +27,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
-@ExtendWith(LocalstackDockerExtension.class)
 @LocalstackDockerProperties(services = { S3, SQS, SNS }, imageTag = "0.12.19.1")
 @Import(AWSTestConfiguration.class)
+@ExtendWith(LocalstackDockerExtension.class)
+@SpringBootTest
 class PersonMessageListenerITWithSQSReturn {
 
     @Autowired
@@ -42,8 +42,8 @@ class PersonMessageListenerITWithSQSReturn {
     @Value("${sns.personTopicResult.url}")
     private String personTopicResultURL;
 
-    @BeforeAll
-    public static void init() {
+
+    static {
         TestUtils.getClientS3().createBucket("person-bucket");
         TestUtils.getClientSQS().createQueue("person-queue");
     }
