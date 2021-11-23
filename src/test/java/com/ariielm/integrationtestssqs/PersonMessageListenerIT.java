@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.amazonaws.services.sns.AmazonSNS;
 import io.awspring.cloud.messaging.core.QueueMessagingTemplate;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,25 +29,22 @@ class PersonMessageListenerIT {
 
     private static final String QUEUE_NAME = "person-test-queue";
     private static final String BUCKET_NAME = "person-test-bucket";
-    private static final String TOPIC_NAME = "person-test-topic";
 
     @Container
     static LocalStackContainer localStack =
             new LocalStackContainer(DockerImageName.parse("localstack/localstack:0.13.0"))
-                    .withServices(S3, SQS, SNS);
+                    .withServices(S3, SQS);
 
     @BeforeAll
     static void beforeAll() throws IOException, InterruptedException {
         localStack.execInContainer("awslocal", "sqs", "create-queue", "--queue-name", QUEUE_NAME);
         localStack.execInContainer("awslocal", "s3", "mb", "s3://" + BUCKET_NAME);
-        localStack.execInContainer("awslocal", "sns", "create-topic", "--name", TOPIC_NAME);
     }
 
     @DynamicPropertySource
     static void overrideConfiguration(DynamicPropertyRegistry registry) {
         registry.add("sqs.personQueue", () -> QUEUE_NAME);
         registry.add("s3.personBucket", () -> BUCKET_NAME);
-        registry.add("sns.personTopic", () -> BUCKET_NAME);
         registry.add("cloud.aws.sqs.endpoint", () -> localStack.getEndpointOverride(SQS));
         registry.add("cloud.aws.s3.endpoint", () -> localStack.getEndpointOverride(S3));
         registry.add("cloud.aws.credentials.access-key", localStack::getAccessKey);
@@ -60,9 +56,6 @@ class PersonMessageListenerIT {
 
     @Autowired
     private QueueMessagingTemplate queueMessagingTemplate;
-
-    @Autowired
-    private AmazonSNS amazonSNS;
 
     @Test
     void messageShouldBeUploadedToBucketOnceConsumedFromQueue() {

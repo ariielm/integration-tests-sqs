@@ -13,6 +13,3 @@ sqs:
 
 s3:
   personBucket: person-bucket
-
-sns:
-  personTopic: person-topic
