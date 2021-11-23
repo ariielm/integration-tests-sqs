@@ -27,50 +27,50 @@ import static org.testcontainers.containers.localstack.LocalStackContainer.Servi
 @SpringBootTest
 class PersonMessageListenerIT {
 
-    private static final String QUEUE_NAME = "person-test-queue";
-    private static final String BUCKET_NAME = "person-test-bucket";
-
-    @Container
-    static LocalStackContainer localStack =
-            new LocalStackContainer(DockerImageName.parse("localstack/localstack:0.13.0"))
-                    .withServices(S3, SQS);
-
-    @BeforeAll
-    static void beforeAll() throws IOException, InterruptedException {
-        localStack.execInContainer("awslocal", "sqs", "create-queue", "--queue-name", QUEUE_NAME);
-        localStack.execInContainer("awslocal", "s3", "mb", "s3://" + BUCKET_NAME);
-    }
-
-    @DynamicPropertySource
-    static void overrideConfiguration(DynamicPropertyRegistry registry) {
-        registry.add("sqs.personQueue", () -> QUEUE_NAME);
-        registry.add("s3.personBucket", () -> BUCKET_NAME);
-        registry.add("cloud.aws.sqs.endpoint", () -> localStack.getEndpointOverride(SQS));
-        registry.add("cloud.aws.s3.endpoint", () -> localStack.getEndpointOverride(S3));
-        registry.add("cloud.aws.credentials.access-key", localStack::getAccessKey);
-        registry.add("cloud.aws.credentials.secret-key", localStack::getSecretKey);
-    }
-
-    @Autowired
-    private AmazonS3 amazonS3;
-
-    @Autowired
-    private QueueMessagingTemplate queueMessagingTemplate;
-
-    @Test
-    void messageShouldBeUploadedToBucketOnceConsumedFromQueue() {
-        queueMessagingTemplate.send(QUEUE_NAME, new GenericMessage<>("{\n" +
-                "           \"id\": \"42\",\n" +
-                "           \"name\": \"Ariel Molina\",\n" +
-                "           \"createdAt\": \"2021-11-11 12:00:00\",\n" +
-                "           \"active\": true\n" +
-                "        }", Map.of("contentType", "application/json")));
-
-        given()
-                .ignoreException(AmazonS3Exception.class)
-                .await()
-                .atMost(5, SECONDS)
-                .untilAsserted(() -> assertNotNull(amazonS3.getObject(BUCKET_NAME, "42")));
-
-    }
+//    private static final String QUEUE_NAME = "person-test-queue";
+//    private static final String BUCKET_NAME = "person-test-bucket";
+//
+//    @Container
+//    static LocalStackContainer localStack =
+//            new LocalStackContainer(DockerImageName.parse("localstack/localstack:0.13.0"))
+//                    .withServices(S3, SQS);
+//
+//    @BeforeAll
+//    static void beforeAll() throws IOException, InterruptedException {
+//        localStack.execInContainer("awslocal", "sqs", "create-queue", "--queue-name", QUEUE_NAME);
+//        localStack.execInContainer("awslocal", "s3", "mb", "s3://" + BUCKET_NAME);
+//    }
+//
+//    @DynamicPropertySource
+//    static void overrideConfiguration(DynamicPropertyRegistry registry) {
+//        registry.add("sqs.personQueue", () -> QUEUE_NAME);
+//        registry.add("s3.personBucket", () -> BUCKET_NAME);
+//        registry.add("cloud.aws.sqs.endpoint", () -> localStack.getEndpointOverride(SQS));
+//        registry.add("cloud.aws.s3.endpoint", () -> localStack.getEndpointOverride(S3));
+//        registry.add("cloud.aws.credentials.access-key", localStack::getAccessKey);
+//        registry.add("cloud.aws.credentials.secret-key", localStack::getSecretKey);
+//    }
+//
+//    @Autowired
+//    private AmazonS3 amazonS3;
+//
+//    @Autowired
+//    private QueueMessagingTemplate queueMessagingTemplate;
+//
+//    @Test
+//    void messageShouldBeUploadedToBucketOnceConsumedFromQueue() {
+//        queueMessagingTemplate.send(QUEUE_NAME, new GenericMessage<>("{\n" +
+//                "           \"id\": \"42\",\n" +
+//                "           \"name\": \"Ariel Molina\",\n" +
+//                "           \"createdAt\": \"2021-11-11 12:00:00\",\n" +
+//                "           \"active\": true\n" +
+//                "        }", Map.of("contentType", "application/json")));
+//
+//        given()
+//                .ignoreException(AmazonS3Exception.class)
+//                .await()
+//                .atMost(5, SECONDS)
+//                .untilAsserted(() -> assertNotNull(amazonS3.getObject(BUCKET_NAME, "42")));
+//
+//    }
 }

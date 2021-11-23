@@ -1,7 +1,7 @@
 cloud:
   aws:
     region:
-      static: sa-east-1
+      static: us-east-1
     stack:
       auto: false
     credentials:
@@ -13,3 +13,7 @@ sqs:
 
 s3:
   personBucket: person-bucket
+
+spring:
+  main:
+    allow-bean-definition-overriding: true

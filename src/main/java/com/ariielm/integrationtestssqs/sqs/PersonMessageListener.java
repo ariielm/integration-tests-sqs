@@ -1,6 +1,8 @@
 package com.ariielm.integrationtestssqs.sqs;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.model.PublishResult;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,21 +14,33 @@ import org.springframework.stereotype.Component;
 public class PersonMessageListener {
 
     private final AmazonS3 amazonS3;
+    private final AmazonSNS amazonSNS;
     private final ObjectMapper objectMapper;
     private final String personBucket;
+    private final String personTopicArn;
 
     public PersonMessageListener(@Value("${s3.personBucket}") String personBucket,
+                                 @Value("${sns.personTopic.arn}") String personTopicArn,
                                  AmazonS3 amazonS3,
+                                 AmazonSNS amazonSNS,
                                  ObjectMapper objectMapper) {
         this.amazonS3 = amazonS3;
+        this.amazonSNS = amazonSNS;
         this.objectMapper = objectMapper;
         this.personBucket = personBucket;
+        this.personTopicArn = personTopicArn;
     }
 
     @SqsListener(value = "${sqs.personQueue}")
     public void processMessage(@Payload PersonEvent personEvent) throws JsonProcessingException {
         System.out.println("Message received: " + personEvent);
+
         amazonS3.putObject(personBucket, personEvent.getId(), objectMapper.writeValueAsString(personEvent));
+
         System.out.println("Uploaded person " + personEvent.getId() + " succcesfully");
+
+        amazonSNS.publish(personTopicArn, objectMapper.writeValueAsString(personEvent));
+
+        System.out.println("Published person " + personEvent.getId() + " succcesfully");
     }
 }

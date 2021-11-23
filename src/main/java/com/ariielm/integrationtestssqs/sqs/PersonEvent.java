@@ -30,11 +30,11 @@ public class PersonEvent {
         this.id = id;
     }
 
-    public String getname() {
+    public String getName() {
         return name;
     }
 
-    public void setname(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -46,11 +46,21 @@ public class PersonEvent {
         this.active = active;
     }
 
-    public LocalDateTime getcreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setcreatedAt(LocalDateTime createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @Override
+    public String toString() {
+        return "PersonEvent{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", active=" + active +
+                ", createdAt=" + createdAt +
+                '}';
     }
 }
