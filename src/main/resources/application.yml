@@ -5,9 +5,12 @@ cloud:
     stack:
       auto: false
     credentials:
-      secretKey: ABC
-      accessKey: XYZ
-
+      secretKey: test
+      accessKey: test
+    sqs:
+      enabled: true
+      region: us-east-1
+      endpoint: http://localhost:4566
 sqs:
   personQueue: person-queue
 
@@ -17,3 +20,4 @@ s3:
 spring:
   main:
     allow-bean-definition-overriding: true
+

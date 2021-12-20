@@ -6,7 +6,6 @@ import cloud.localstack.docker.annotation.LocalstackDockerProperties;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.sqs.model.AmazonSQSException;
 import io.awspring.cloud.messaging.core.QueueMessagingTemplate;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +27,10 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @LocalstackDockerProperties(services = { S3, SQS, SNS }, imageTag = "0.12.19.1")
-@Import(AWSTestConfiguration.class)
+@Import(AWSLocalstackUtilsTestConfiguration.class)
 @ExtendWith(LocalstackDockerExtension.class)
 @SpringBootTest
-class PersonMessageListenerITWithSQSReturn {
+class PersonMessageListenerITLocalstackUtilsWithSQSReturn {
 
     @Autowired
     private QueueMessagingTemplate queueMessagingTemplate;

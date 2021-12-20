@@ -33,7 +33,7 @@ package com.ariielm.integrationtestssqs;
 //@LocalstackDockerProperties(services = { S3, SQS, SNS }, imageTag = "0.12.19.1")
 //@Import(AWSTestConfiguration.class)
 //@AutoConfigureWireMock(port = 8099)
-class PersonMessageListenerITWithHttpReturn {
+class PersonMessageListenerITLocalstackUtilsWithHttpReturn {
 
 //    @Autowired
 //    private QueueMessagingTemplate queueMessagingTemplate;
